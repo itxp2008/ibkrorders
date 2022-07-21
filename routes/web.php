@@ -1,5 +1,9 @@
 <?php
 
+use App\Http\Controllers\ClientPortalController;
+use App\Http\Controllers\OrderController;
+use App\Http\Controllers\TestController;
+use App\Http\Middleware\EnsureStatusTrue;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -25,4 +29,29 @@ Route::middleware([
     Route::get('/dashboard', function () {
         return view('dashboard');
     })->name('dashboard');
+
+    Route::resource('orders', OrderController::class);
+
+    Route::get('/settings', function () {
+        return view('settings');
+    })->name('settings')->middleware(EnsureStatusTrue::class);
+
+    Route::prefix('clientportal')->name('clientportal.')->group(function () {
+        Route::get('/', [ClientPortalController::class, 'status'])->name('status');
+        Route::get('/start', [ClientPortalController::class, 'start'])->name('start');
+        Route::get('/stop', [ClientPortalController::class, 'stop'])->name('stop');
+        Route::get('/logout', [ClientPortalController::class, 'logout'])->name('logout');
+        Route::get('/reauth', [ClientPortalController::class, 'reauth'])->name('reauth');
+        Route::get('/statusstart', [ClientPortalController::class, 'statusStart'])->name('status-start');
+        Route::get('/statusstop', [ClientPortalController::class, 'statusStop'])->name('status-stop');                
+        // Route::get('/scanon', [ClientPortalController::class, 'scanOn'])->name('scan-on');
+        // Route::get('/scanoff', [ClientPortalController::class, 'scanOff'])->name('scan-off');
+    });
+
+    Route::prefix('test')->name('test.')->group(function() {
+        Route::get('/notify', [TestController::class, 'notify'])->name('notify');
+        Route::get('/candle', [TestController::class, 'candle'])->name('candle');
+        Route::get('/futures', [TestController::class, 'futures'])->name('futures');
+        Route::get('/stocks', [TestController::class, 'stocks'])->name('stocks');
+    });
 });
