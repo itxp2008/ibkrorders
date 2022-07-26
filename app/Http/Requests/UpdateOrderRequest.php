@@ -13,7 +13,7 @@ class UpdateOrderRequest extends FormRequest
      */
     public function authorize()
     {
-        return false;
+        return true;
     }
 
     /**
@@ -25,6 +25,19 @@ class UpdateOrderRequest extends FormRequest
     {
         return [
             //
+            'symbol' => 'required',
+            'conid' => 'required',
+            'sec' => 'required',
+            'info' => 'required',
+            'type' => 'required',
+            'bar' => 'required',
+            'side' => 'required',
+            'qty' => 'required|numeric',
+            'stop' => 'required|numeric',
+            'limit' => 'required_if:type,STOP-LIMIT|nullable|numeric',
+            'trailing' => 'required|boolean',
+            'stop_offset' => 'required_if:trailing,1|nullable|numeric',
+            'limit_offset' => 'required_if:trailing,1|required_if:type,STOP-LIMIT|nullable|numeric'
         ];
     }
 }

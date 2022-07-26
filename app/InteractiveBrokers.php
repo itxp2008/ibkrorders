@@ -11,6 +11,17 @@ use Illuminate\Support\Facades\Http;
 
 class InteractiveBrokers
 {
+    protected $bars = [
+        '1min' => 60,
+        '2min' => 120,
+        '3min' => 180,
+        '5min' => 300,
+        '10min' => 600,
+        '15min' => 900,
+        '30min' => 1800,
+        '1h' => 3600
+    ];
+
     public static function notify($msg){
         $users = User::all();
         foreach($users as $user)
@@ -436,6 +447,55 @@ class InteractiveBrokers
         ])->get('https://localhost:5000/v1/api/portfolio/'. $acctId .'/summary');
 
         return $response->json();
+    }
+
+    public function getCandle($conid, $bar){
+
+        $period = $bar;
+
+        $time = time();
+        if(app(GeneralSettings::class)->test){
+            if($this->bars[$bar]<=900)
+                $period='16min';
+            $time -= 900;
+        }
+
+        $retry = true;
+        $tries = 0;
+
+        while($retry){
+            $tries++;
+
+            $response = Http::withOptions([
+                'verify' => false,
+            ])->get("https://localhost:5000/v1/api/iserver/marketdata/history?conid=$conid&period=$period&bar=$bar");
+
+            dd($response->json());
+
+            $log = new Log;
+            $log->name = 'get_candle_B'.$bar.'_P'.$period.'#'.$conid;
+            $log->json = ['response' => $response->json()];
+            $log->save();
+
+            $candles = $response->json()['data'];
+
+            // dd(end($candles));
+
+            if($candle = end($candles)){
+                if((($candle['t']/1000) < $time) && (($candle['t']/1000) > ($time - $this->bars[$bar])))
+                    $log = new Log;
+                    $log->name = 'good_candle_B'.$bar.'_P'.$period.'#'.$conid;
+                    $log->json = ['candle' => $candle];
+                    $log->save();
+                    return $candle;
+            }
+            if($tries > 20) $retry = false;
+            if($retry) sleep(2);
+        }
+
+// dd('pl');
+
+        return false;
     }
     
 

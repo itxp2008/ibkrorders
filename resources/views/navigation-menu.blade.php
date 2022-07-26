@@ -12,14 +12,23 @@
 
                 <!-- Navigation Links -->
                 <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
-                    <x-jet-nav-link href="{{ route('dashboard') }}" :active="request()->routeIs('dashboard')">
-                        {{ __('Dashboard') }}
+                    <x-jet-nav-link href="{{ route('orders.index') }}" :active="request()->routeIs('orders.index')">
+                        {{ __('Orders') }}
                     </x-jet-nav-link>
                     <x-jet-nav-link href="{{ route('clientportal.status') }}" :active="request()->routeIs('clientportal.status')">
                         {{ __('ClientPortal') }}
                     </x-jet-nav-link>
                     <x-jet-nav-link href="{{ route('settings') }}" :active="request()->routeIs('settings')">
                         {{ __('Settings') }}
+                    </x-jet-nav-link>
+                    <x-jet-nav-link href="{{ route('logs') }}" :active="request()->routeIs('logs')">
+                        {{ __('Logs') }}
+                    </x-jet-nav-link>
+                    <x-jet-nav-link href="{{ route('ib.positions') }}" :active="request()->routeIs('ib.positions')">
+                        {{ __('IBPositions') }}
+                    </x-jet-nav-link>
+                    <x-jet-nav-link href="{{ route('ib.orders') }}" :active="request()->routeIs('ib.orders')">
+                        {{ __('IBOrders') }}
                     </x-jet-nav-link>
                 </div>
             </div>
@@ -143,14 +152,23 @@
     <!-- Responsive Navigation Menu -->
     <div :class="{'block': open, 'hidden': ! open}" class="hidden sm:hidden">
         <div class="pt-2 pb-3 space-y-1">
-            <x-jet-responsive-nav-link href="{{ route('dashboard') }}" :active="request()->routeIs('dashboard')">
-                {{ __('Dashboard') }}
+            <x-jet-responsive-nav-link href="{{ route('orders.index') }}" :active="request()->routeIs('orders.index')">
+                {{ __('Orders') }}
             </x-jet-responsive-nav-link>
             <x-jet-responsive-nav-link href="{{ route('clientportal.status') }}" :active="request()->routeIs('clientportal.status')">
                 {{ __('Clientportal') }}
             </x-jet-responsive-nav-link>
             <x-jet-responsive-nav-link href="{{ route('settings') }}" :active="request()->routeIs('settings')">
                 {{ __('Settings') }}
+            </x-jet-responsive-nav-link>
+            <x-jet-responsive-nav-link href="{{ route('logs') }}" :active="request()->routeIs('logs')">
+                {{ __('Logs') }}
+            </x-jet-responsive-nav-link>
+            <x-jet-responsive-nav-link href="{{ route('ib.positions') }}" :active="request()->routeIs('ib.positions')">
+                {{ __('IBPositions') }}
+            </x-jet-responsive-nav-link>
+            <x-jet-responsive-nav-link href="{{ route('ib.orders') }}" :active="request()->routeIs('ib.orders')">
+                {{ __('IBOrders') }}
             </x-jet-responsive-nav-link>
         </div>
 

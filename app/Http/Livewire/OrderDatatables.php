@@ -36,19 +36,19 @@ class OrderDatatables extends LivewireDatatable
                 ->filterable(),
 
             Column::name('sec')
-                ->filterable(),
+                ->filterable(['STK', 'FUT']),
 
             Column::name('info')
                 ->filterable(),
 
             Column::name('type')
-                ->filterable(),
+                ->filterable(['STOP', 'STOP-LIMIT']),
 
             Column::name('bar')
-                ->filterable(),
+                ->filterable(['1min','2min','3min','5min','10min','15min','30min','1h']),
 
             Column::name('side')
-                ->filterable(),
+                ->filterable(['BUY', 'SELL']),
 
             NumberColumn::name('qty')
                 ->filterable(),
@@ -63,13 +63,13 @@ class OrderDatatables extends LivewireDatatable
                 ->filterable(),
 
             NumberColumn::name('stop_offset')
-            ->filterable(),
+                ->filterable(),
 
             NumberColumn::name('limit_offset')
                 ->filterable(),
             
             Column::name('status')
-                ->filterable(),
+                ->filterable(['NEW', 'SUBMITTED']),
 
             // Column::name('balances.asset')
             //     ->filterable(),
@@ -100,54 +100,54 @@ class OrderDatatables extends LivewireDatatable
 
             
             DateColumn::name('created_at')
-                ->format('Y-m-d H:i:s'),
+                ->format('Y-m-d H:i:s')
+                ->filterable(),
                 // ->label('createdAt')
 
             DateColumn::name('updated_at')
-                ->format('Y-m-d H:i:s'),
-                // ->label('createdAt')
+                ->format('Y-m-d H:i:s')->filterable(),
 
-            // Column::callback(['id'], function ($id) {
-            //         return view('table-actions', ['id' => $id]);
-            // })->unsortable()
+            Column::callback(['id', 'status'], function ($id, $status) {
+                    return view('table-actions', compact('id', 'status'));
+            })->unsortable()
                 
         ];
 
     }
 
-    public function buildActions()
-    {
-        return [
+    // public function buildActions()
+    // {
+    //     return [
 
-            Action::value('order')->label('Create order')->callback(function ($mode, $items) {
-                // $items contains an array with the primary keys of the selected items
-                // dd($items);
-                return redirect()->route('orders.create')->with( ['ids' => $items] );
+    //         Action::value('order')->label('Create order')->callback(function ($mode, $items) {
+    //             // $items contains an array with the primary keys of the selected items
+    //             // dd($items);
+    //             return redirect()->route('orders.create')->with( ['ids' => $items] );
 
-                // return view('order.create', compact('items'));
+    //             // return view('order.create', compact('items'));
 
-                // app()->call('App\Http\Controllers\OrderController@create',  [
-                //     "ids" => $items
-                // ]);
-            }),
+    //             // app()->call('App\Http\Controllers\OrderController@create',  [
+    //             //     "ids" => $items
+    //             // ]);
+    //         }),
 
-            Action::value('balance')->label('Refresh balance')->callback(function ($mode, $items) {
-                // $items contains an array with the primary keys of the selected items
-                // dd($items);
-                // return redirect()->route('orders.create')->with( ['ids' => $items] );
+    //         Action::value('balance')->label('Refresh balance')->callback(function ($mode, $items) {
+    //             // $items contains an array with the primary keys of the selected items
+    //             // dd($items);
+    //             // return redirect()->route('orders.create')->with( ['ids' => $items] );
 
-                // dd($items);
-                foreach($items as $item)
-                    FetchBalance::dispatch(Client::findOrFail($item));
+    //             // dd($items);
+    //             foreach($items as $item)
+    //                 FetchBalance::dispatch(Client::findOrFail($item));
 
-                // return view('order.create', compact('items'));
+    //             // return view('order.create', compact('items'));
 
-                // app()->call('App\Http\Controllers\OrderController@create',  [
-                //     "ids" => $items
-                // ]);
-            }),
+    //             // app()->call('App\Http\Controllers\OrderController@create',  [
+    //             //     "ids" => $items
+    //             // ]);
+    //         }),
 
             
-        ];
-    }
+    //     ];
+    // }
 }

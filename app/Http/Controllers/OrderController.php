@@ -114,6 +114,9 @@ class OrderController extends Controller
     public function edit(Order $order)
     {
         //
+        $bars = $this->bars;
+
+        return view('order.edit', compact('order', 'bars'));
     }
 
     /**

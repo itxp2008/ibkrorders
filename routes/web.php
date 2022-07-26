@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ClientPortalController;
+use App\Http\Controllers\IBController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\TestController;
 use App\Http\Middleware\EnsureStatusTrue;
@@ -18,7 +19,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return redirect()->route('orders.index');
 });
 
 Route::middleware([
@@ -27,7 +28,7 @@ Route::middleware([
     'verified'
 ])->group(function () {
     Route::get('/dashboard', function () {
-        return view('dashboard');
+        return redirect()->route('orders.index');
     })->name('dashboard');
 
     Route::resource('orders', OrderController::class);
@@ -35,6 +36,10 @@ Route::middleware([
     Route::get('/settings', function () {
         return view('settings');
     })->name('settings')->middleware(EnsureStatusTrue::class);
+
+    Route::get('/logs', function () {
+        return view('logs');
+    })->name('logs');
 
     Route::prefix('clientportal')->name('clientportal.')->group(function () {
         Route::get('/', [ClientPortalController::class, 'status'])->name('status');
@@ -46,6 +51,16 @@ Route::middleware([
         Route::get('/statusstop', [ClientPortalController::class, 'statusStop'])->name('status-stop');                
         // Route::get('/scanon', [ClientPortalController::class, 'scanOn'])->name('scan-on');
         // Route::get('/scanoff', [ClientPortalController::class, 'scanOff'])->name('scan-off');
+    });
+
+    Route::prefix('ib')->name('ib.')->middleware(EnsureStatusTrue::class)->group(function () {
+        // Route::get('/order', [IBController::class, 'newOrder'])->name('newOrder');
+        Route::get('/cancelorder/{acctId}/{orderId}', [IBController::class, 'cancelOrder'])->name('cancelOrder');
+        // Route::post('/order', [IBController::class, 'postOrder'])->name('postOrder');
+        Route::get('/orders', [IBController::class, 'orders'])->name('orders');
+        Route::get('/positions', [IBController::class, 'positions'])->name('positions');
+        Route::get('/info/{conid}', [IBController::class, 'info'])->name('info');
+        Route::get('/orderstatus/{conid}', [IBController::class, 'orderstatus'])->name('orderstatus');
     });
 
     Route::prefix('test')->name('test.')->group(function() {

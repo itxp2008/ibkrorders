@@ -6,7 +6,7 @@ use Spatie\LaravelSettings\Settings;
 
 class GeneralSettings extends Settings
 {
-    public string $account, $status, $paused;
+    public string $account, $status, $paused, $test;
     
     // public bool $site_active;
     
