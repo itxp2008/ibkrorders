@@ -41,7 +41,9 @@ class TestController extends Controller
         // dd(time());
         $ib = new InteractiveBrokers;
 
-        $candle = $ib->getCandle(14237, '15min');
+        $candle = $ib->getCandle(495512566, '1min', true);
+        // $candle = $ib->getCandle(265598, '1min');
+        // $candle = $ib->getCandle(14237, '1d');
 
         dd($candle);
 
@@ -58,7 +60,7 @@ class TestController extends Controller
 
         $response = Http::withOptions([
             'verify' => false,
-        ])->get("https://localhost:5000/v1/api/iserver/marketdata/history?conid=14237&period=$period&bar=$bar");
+        ])->get("https://localhost:5000/v1/api/iserver/marketdata/history?conid=14237&period=$period&bar=$bar&outsideRth=true");
         
         dd($response->json());
 

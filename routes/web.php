@@ -54,9 +54,9 @@ Route::middleware([
     });
 
     Route::prefix('ib')->name('ib.')->middleware(EnsureStatusTrue::class)->group(function () {
-        // Route::get('/order', [IBController::class, 'newOrder'])->name('newOrder');
+        Route::get('/order', [IBController::class, 'newOrder'])->name('newOrder');
         Route::get('/cancelorder/{acctId}/{orderId}', [IBController::class, 'cancelOrder'])->name('cancelOrder');
-        // Route::post('/order', [IBController::class, 'postOrder'])->name('postOrder');
+        Route::post('/order', [IBController::class, 'postOrder'])->name('postOrder');
         Route::get('/orders', [IBController::class, 'orders'])->name('orders');
         Route::get('/positions', [IBController::class, 'positions'])->name('positions');
         Route::get('/info/{conid}', [IBController::class, 'info'])->name('info');

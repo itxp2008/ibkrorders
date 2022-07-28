@@ -3,9 +3,9 @@
         <h2 class="inline-flex font-semibold text-xl text-gray-800 leading-tight">
             {{ __('IBOrders') }}
         </h2>
-        {{-- <a class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded ml-4" href="{{ route('ib.newOrder') }}">
+        <a class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded ml-4" href="{{ route('ib.newOrder') }}">
             new
-        </a> --}}
+        </a>
     </x-slot>
 
     <div>

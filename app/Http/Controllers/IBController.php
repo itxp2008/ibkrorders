@@ -15,53 +15,54 @@ use Psy\VersionUpdater\IntervalChecker;
 class IBController extends Controller
 {
     //
-    // public function newOrder(){
+    public function newOrder(){
 
-    //     // dd('pl');
-    //     $ib = new InteractiveBrokers;
-    //     $accounts = $ib->selectedAccount();
+        // dd('pl');
+        $ib = new InteractiveBrokers;
+        $accounts = $ib->selectedAccount();
 
-    //     $orderType = [
-    //         'MKT' => 'MARKET',
-    //         'LMT' => 'LIMIT',
-    //         'STP' => 'STOP',
-    //         'STOP_LIMIT' => 'STOP LIMIT'
-    //     ];
+        $orderType = [
+            'MKT' => 'MARKET',
+            'LMT' => 'LIMIT',
+            'STP' => 'STOP',
+            'STOP_LIMIT' => 'STOP LIMIT'
+        ];
 
-    //     $side = [
-    //         'BUY' => 'BUY',
-    //         'SELL' => 'SELL'
-    //     ];
+        $side = [
+            'BUY' => 'BUY',
+            'SELL' => 'SELL'
+        ];
 
-    //     $tif = [
-    //         'GTC' => 'Good-Till-Cancel',
-    //         'DAY' => 'DAY'
-    //     ];
+        $tif = [
+            'GTC' => 'Good-Till-Cancel',
+            'DAY' => 'DAY'
+        ];
 
-    //     return view('ib.order', compact('accounts', 'orderType', 'side', 'tif'));
-    // }
+        return view('ib.order', compact('accounts', 'orderType', 'side', 'tif'));
+    }
 
-    // public function postOrder(PostOrderRequest $request){
+    public function postOrder(PostOrderRequest $request){
 
-    //     // dd($request->all());
-    //     $request->validate(['quantity' => [new IntegerIf('outside_rth')]]);
+        // dd($request->all());
+        // $request->validate(['quantity' => [new IntegerIf('outside_rth')]]);
 
-    //     $ib = new InteractiveBrokers;
+        $ib = new InteractiveBrokers;
 
-    //     if($request->outside_rth)
-    //         $outside_rth = $ib->outside_rth($request->conid, $request->orderType);
-    //     else $outside_rth = false;
+        // if($request->outside_rth)
+        //     $outside_rth = $ib->outside_rth($request->conid, $request->orderType);
+        // else $outside_rth = false;
+        $outside_rth = true;
 
-    //     $ib->order($request->acctId, $request->conid, $request->orderType, $request->quantity, $request->side, $request->tif, $outside_rth, $request->price, $request->auxPrice);
+        $ib->order($request->acctId, $request->conid, $request->orderType, $request->quantity, $request->side, $request->tif, $outside_rth, $request->price, $request->auxPrice);
 
-    //     // $log = new Log;
-    //     // $log->name = 'IB direct order_request conid:'. $request->conid;
-    //     // $log->json = $response;
-    //     // $log->save();
+        // $log = new Log;
+        // $log->name = 'IB direct order_request conid:'. $request->conid;
+        // $log->json = $response;
+        // $log->save();
 
-    //     return redirect()->route('ib.orders');
+        return redirect()->route('ib.orders');
 
-    // }
+    }
 
     public function orders(){
 
@@ -108,7 +109,7 @@ class IBController extends Controller
 
         // dd($status);
 
-        return view('orderstatus', compact('status'));
+        return view('ib.orderstatus', compact('status'));
     }
 
     // public function contracts(GetContractsRequest $request){

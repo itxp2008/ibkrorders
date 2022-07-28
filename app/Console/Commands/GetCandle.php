@@ -20,7 +20,7 @@ class GetCandle extends Command
      *
      * @var string
      */
-    protected $signature = 'ib:getcandle {bar}';
+    protected $signature = 'ib:getcandle {sec} {bar}';
 
     /**
      * The console command description.
@@ -36,7 +36,13 @@ class GetCandle extends Command
      */
     public function handle()
     {
+        $sec = $this->argument('sec');
         $bar = $this->argument('bar');
+
+        
+
+        return Command::SUCCESS;
+
 
         $orders = Order::where('bar', $bar)->where('status', 'NEW')->get();
 

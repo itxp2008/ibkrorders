@@ -19,7 +19,10 @@ class InteractiveBrokers
         '10min' => 600,
         '15min' => 900,
         '30min' => 1800,
-        '1h' => 3600
+        '1h' => 3600,
+        '2h' => 7200,
+        '4h' => 14400,
+        '1d' => 86400
     ];
 
     public static function notify($msg){
@@ -208,6 +211,8 @@ class InteractiveBrokers
         $response = Http::withOptions([
             'verify' => false,
         ])->post('https://localhost:5000/v1/api/iserver/account/'.$acctId.'/orders', ["orders" => [ $order]]);
+
+        // dd($response->json());
         
         $log = new Log;
         $log->name = 'order_response conid:'. $conid;
@@ -410,6 +415,8 @@ class InteractiveBrokers
 
         $rules = $response->json('rules');
 
+        dd($rules);
+
         $types = [
             'LMT' => "limit",
             'STOP_LIMIT' => "stop_limit"
@@ -421,6 +428,8 @@ class InteractiveBrokers
             if(array_key_exists('orderTypesOutside', $rules)){
                 if(is_int(array_search($types[$type], $rules['orderTypesOutside']))) $outside_rth = true;
             };
+
+        dd($outside_rth);
 
         return $outside_rth;
     }
@@ -449,26 +458,36 @@ class InteractiveBrokers
         return $response->json();
     }
 
-    public function getCandle($conid, $bar){
+    public function getCandle($conid, $bar, $outside_rth = false){
+        // dd(1);
 
         $period = $bar;
 
-        $time = time();
-        if(app(GeneralSettings::class)->test){
-            if($this->bars[$bar]<=900)
-                $period='16min';
-            $time -= 900;
-        }
+        
+        // if(app(GeneralSettings::class)->test){
+        //     if($this->bars[$bar]<=900)
+        //         $period='16min';
+        //     $time -= 900;
+        // }
 
         $retry = true;
         $tries = 0;
 
+        if($outside_rth)$outside_rth='true';
+        else $outside_rth='false';
+
+        // dd("outsideRth=$outside_rth");
+
         while($retry){
             $tries++;
+            sleep(2);
+            $time = time();
+
 
             $response = Http::withOptions([
                 'verify' => false,
-            ])->get("https://localhost:5000/v1/api/iserver/marketdata/history?conid=$conid&period=$period&bar=$bar");
+            // ])->get("https://localhost:5000/v1/api/iserver/marketdata/history?conid=$conid&period=2d&bar=$bar&outsideRth=true");
+            ])->get("https://localhost:5000/v1/api/iserver/marketdata/history?conid=$conid&period=15min&bar=$bar&outsideRth=$outside_rth");
 
             dd($response->json());
 
@@ -476,6 +495,20 @@ class InteractiveBrokers
             $log->name = 'get_candle_B'.$bar.'_P'.$period.'#'.$conid;
             $log->json = ['response' => $response->json()];
             $log->save();
+
+            foreach($candles = $response->json()['data'] as $key => $candle){
+                // $candles[$key]['datetime'] = date('d-m-Y H:i:s', $candle['t']/1000);
+                if((($candle['t']/1000) < $time- $this->bars[$bar]) && (($candle['t']/1000) > ($time - 2 * $this->bars[$bar])))
+                    $log = new Log;
+                    $log->name = 'good_candle_B'.$bar.'_P'.$period.'#'.$conid;
+                    $log->json = ['candle' => $candle];
+                    $log->save();
+                    return $candle;
+            }
+
+            dd($candles, $response->json());
+
+            
 
             $candles = $response->json()['data'];
 
