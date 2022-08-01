@@ -487,12 +487,12 @@ class InteractiveBrokers
             $response = Http::withOptions([
                 'verify' => false,
             // ])->get("https://localhost:5000/v1/api/iserver/marketdata/history?conid=$conid&period=2d&bar=$bar&outsideRth=true");
-            ])->get("https://localhost:5000/v1/api/iserver/marketdata/history?conid=$conid&period=15min&bar=$bar&outsideRth=$outside_rth");
+            ])->get("https://localhost:5000/v1/api/iserver/marketdata/history?conid=$conid&period=$period&bar=$bar&outsideRth=$outside_rth");
 
-            dd($response->json());
+            // dd($response->json());
 
             $log = new Log;
-            $log->name = 'get_candle_B'.$bar.'_P'.$period.'#'.$conid;
+            $log->name = 'candle_B'.$bar.'_P'.$period.'#'.$conid;
             $log->json = ['response' => $response->json()];
             $log->save();
 
@@ -503,7 +503,7 @@ class InteractiveBrokers
                     $log->name = 'good_candle_B'.$bar.'_P'.$period.'#'.$conid;
                     $log->json = ['candle' => $candle];
                     $log->save();
-                    return $candle;
+                    // return $candle;
             }
 
             dd($candles, $response->json());
@@ -527,6 +527,34 @@ class InteractiveBrokers
         }
 
 // dd('pl');
+
+        return false;
+    }
+
+    public function getClose($conid, $outside_rth){
+        $period = '1min';
+        $bar = '1min';
+        $url = "https://localhost:5000/v1/api/iserver/marketdata/history?conid=$conid&period=$period&bar=$bar&outsideRth=$outside_rth";
+        if($outside_rth) $url .= '&outsideRth=true';
+
+        $response = Http::withOptions([
+            'verify' => false,
+        // ])->get("https://localhost:5000/v1/api/iserver/marketdata/history?conid=$conid&period=2d&bar=$bar&outsideRth=true");
+        ])->get($url);
+
+        $time = time();
+
+        if(array_key_exists('data', $json = $response->json()))
+            foreach($candles = $json['data'] as $key => $candle){
+                // $candles[$key]['datetime'] = date('d-m-Y H:i:s', $candle['t']/1000);
+                if((($candle['t']/1000) < $time - 60) && (($candle['t']/1000) > ($time - 120)))
+                    // $log = new Log;
+                    // $log->name = 'good_candle_'.$sec.'_B'.$bar.'#'.$conid.'|'.$symbol;
+                    // $log->json = ['close' => $candle['c'], 'datetime' => date('d-m-Y H:i:s', $candle['t']/1000)];
+                    // $log->save();
+                    return $candle['c'];
+                    // return $candle;
+            }
 
         return false;
     }

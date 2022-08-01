@@ -12,4 +12,6 @@ class Log extends Model
     protected $casts = [
         'json' => 'array',
     ];
+
+    protected $fillable = ['name', 'json'];
 }

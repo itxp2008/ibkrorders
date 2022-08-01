@@ -37,7 +37,7 @@ class StoreOrderRequest extends FormRequest
             'limit' => 'required_if:type,STOP-LIMIT|nullable|numeric',
             'trailing' => 'required|boolean',
             'stop_offset' => 'required_if:trailing,1|nullable|numeric',
-            'limit_offset' => 'required_if:trailing,1|required_if:type,STOP-LIMIT|nullable|numeric'
+            'limit_offset' => 'sometimes|required_if:trailing,1|nullable|numeric|sometimes|required_if:type,STOP-LIMIT'
         ];
     }
 }
